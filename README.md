@@ -1,6 +1,6 @@
 # HooNott Portal
 
-Private family portal at **hoonott.com**. Shared calendar with admin-approved signups.
+Private family portal at **hoonott.com**. Shared calendar with admin-approved signups for the Hoover-Nott family.
 
 - **Hosting**: Vercel
 - **Framework**: Next.js 16 (App Router)
