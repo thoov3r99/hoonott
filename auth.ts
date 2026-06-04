@@ -120,12 +120,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = (user as { id?: string }).id ?? token.sub;
-        token.status = (user as { status?: "pending" | "approved" | "rejected" }).status;
-        token.role = (user as { role?: "user" | "admin" }).role;
-        token.color = (user as { color?: string | null }).color ?? null;
       }
 
-      if (!token.status || trigger === "update") {
+      // Re-query on first sign-in (user is set) so we pick up any DB updates
+      // from events.createUser — notably the admin auto-approval, which runs
+      // after the adapter creates the row but mutates only the DB, not the
+      // stale `user` object passed in here.
+      if (user || !token.status || trigger === "update") {
         const id = token.id ?? token.sub;
         if (id) {
           const [row] = await db
