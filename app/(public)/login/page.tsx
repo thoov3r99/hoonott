@@ -13,6 +13,16 @@ function errorCode(e: unknown): string {
   return "Unknown";
 }
 
+function isNextRedirect(e: unknown): boolean {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "digest" in e &&
+    typeof (e as { digest?: string }).digest === "string" &&
+    (e as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+  );
+}
+
 export const metadata = { title: "Sign in · HooNott Portal" };
 
 type SearchParams = Promise<{ error?: string }>;
@@ -63,16 +73,6 @@ export default async function LoginPage({
       if (code === "rejected") redirect("/rejected");
       redirect(`/login?error=${encodeURIComponent(code)}`);
     }
-  }
-
-  function isNextRedirect(e: unknown): boolean {
-    return (
-      typeof e === "object" &&
-      e !== null &&
-      "digest" in e &&
-      typeof (e as { digest?: string }).digest === "string" &&
-      (e as { digest: string }).digest.startsWith("NEXT_REDIRECT")
-    );
   }
 
   return (

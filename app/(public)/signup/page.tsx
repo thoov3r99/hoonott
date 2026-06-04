@@ -17,6 +17,16 @@ const ERROR_COPY: Record<string, string> = {
   server: "Something went wrong on our side. Try again in a moment.",
 };
 
+function isNextRedirect(e: unknown): boolean {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "digest" in e &&
+    typeof (e as { digest?: string }).digest === "string" &&
+    (e as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+  );
+}
+
 export default async function SignupPage({
   searchParams,
 }: {
@@ -37,16 +47,6 @@ export default async function SignupPage({
       const code = e instanceof AuthError ? e.type : "server";
       redirect(`/signup?error=${encodeURIComponent(code)}`);
     }
-  }
-
-  function isNextRedirect(e: unknown): boolean {
-    return (
-      typeof e === "object" &&
-      e !== null &&
-      "digest" in e &&
-      typeof (e as { digest?: string }).digest === "string" &&
-      (e as { digest: string }).digest.startsWith("NEXT_REDIRECT")
-    );
   }
 
   return (
